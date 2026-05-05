@@ -1,0 +1,21 @@
+"id","name","description","user_id"
+1,"Курсовая 2026: (L0, L1)-гладкость",Исследование,1
+2,Сходимость Proximal SGD,Бенчмарк,1
+3,SberDevices Task,GigaCode,1
+4,ШАД Подготовка,Алгебра,1
+5,ImageNet ResNet50,Глубокие сети,2
+6,Transformer Finetuning,NLP,2
+7,RL_Atari,RL,3
+8,Convex Opt,Теория,4
+9,Non-convex,Анализ,5
+10,GAN stability,Генерация,6
+11,Diffusion,Score Matching,7
+12,Med Image,МРТ,8
+13,Time Series,ARIMA,9
+14,RecSys,Факторизации,10
+15,GNNs,Соцсети,11
+16,AutoML,Сравнение,12
+17,Fed Learning,Приватность,13
+18,QML,Кванты,14
+19,Causal Inference,A/B,15
+20,Edge AI,Сжатие,16

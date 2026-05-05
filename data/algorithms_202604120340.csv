@@ -1,0 +1,21 @@
+"id","name","description","author_id"
+1,SGD,Stochastic,1
+2,Momentum,Heavy Ball,1
+3,Nesterov,NAG,2
+4,Adam,Adaptive,3
+5,AdamW,Weight decay,4
+6,RMSprop,RMS,5
+7,Adagrad,Ada,6
+8,Adadelta,Delta,7
+9,Nadam,Nesterov Adam,8
+10,Proximal SGD,Prox,1
+11,FISTA,Fast ISTA,9
+12,ISTA,ISTA,10
+13,L-BFGS,Quasi-Newton,11
+14,BFGS,Full BFGS,12
+15,Newton-CG,Hessian-free,13
+16,SAGA,Variance reduction,14
+17,SVRG,SVRG,15
+18,SARAH,SARAH,16
+19,Katyusha,Accelerated,17
+20,SPIDER,SPIDER,18

@@ -1,0 +1,100 @@
+Модель: Gemini-pro 3.1
+Промпт: создай синтетическое заполнение таблиц с такими create запросами
+CREATE TABLE "users" (
+    "id" SERIAL PRIMARY KEY, 
+    "username" varchar UNIQUE NOT NULL, 
+    "email" varchar UNIQUE
+);
+
+CREATE TABLE "projects" (
+    "id" SERIAL PRIMARY KEY, 
+    "name" varchar NOT NULL, 
+    "description" text, 
+    "user_id" integer REFERENCES "users"("id") ON DELETE SET NULL
+);
+
+CREATE TABLE "datasets" (
+    "id" SERIAL PRIMARY KEY, 
+    "name" varchar NOT NULL, 
+    "file_path" varchar, 
+    "n_samples" integer CHECK ("n_samples" > 0), 
+    "n_features" integer CHECK ("n_features" > 0), 
+    "author_id" integer REFERENCES "users"("id") ON DELETE SET NULL
+);
+
+CREATE TABLE "objective_functions" (
+    "id" SERIAL PRIMARY KEY, 
+    "name" varchar NOT NULL, 
+    "dimension" integer NOT NULL CHECK ("dimension" > 0), 
+    "is_convex" boolean DEFAULT false, 
+    "mu_strong_convexity" float CHECK ("mu_strong_convexity" >= 0), 
+    "lipschitz_l" float CHECK ("lipschitz_l" > 0), 
+    "optimal_value" float, 
+    "formula_latex" text, 
+    "dataset_id" integer REFERENCES "datasets"("id") ON DELETE SET NULL, 
+    "author_id" integer REFERENCES "users"("id") ON DELETE SET NULL
+);
+
+CREATE TABLE "algorithms" (
+    "id" SERIAL PRIMARY KEY, 
+    "name" varchar NOT NULL, 
+    "description" text, 
+    "author_id" integer REFERENCES "users"("id") ON DELETE SET NULL
+);
+
+CREATE TABLE "oracles" (
+    "id" SERIAL PRIMARY KEY, 
+    "name" varchar NOT NULL, 
+    "oracle_type" varchar NOT NULL, 
+    "batch_size" integer CHECK ("batch_size" > 0), 
+    "noise_variance" float CHECK ("noise_variance" >= 0), 
+    "author_id" integer REFERENCES "users"("id") ON DELETE SET NULL
+);
+
+CREATE TABLE "environments" (
+    "id" SERIAL PRIMARY KEY, 
+    "name" varchar NOT NULL, 
+    "hardware_type" varchar, 
+    "precision" varchar, 
+    "author_id" integer REFERENCES "users"("id") ON DELETE SET NULL
+);
+
+CREATE TABLE "experiment_configs" (
+    "id" SERIAL PRIMARY KEY, 
+    "max_iterations" integer NOT NULL CHECK ("max_iterations" > 0), 
+    "tolerance_epsilon" float CHECK ("tolerance_epsilon" >= 0), 
+    "init_seed" integer, 
+    "init_strategy" varchar, 
+    "hyperparameters" jsonb NOT NULL, 
+    "author_id" integer REFERENCES "users"("id") ON DELETE SET NULL
+);
+
+CREATE TABLE "experiment_runs" (
+    "id" SERIAL PRIMARY KEY, 
+    "status" varchar NOT NULL DEFAULT 'pending' CHECK ("status" IN ('pending', 'running', 'completed', 'failed')), 
+    "project_id" integer REFERENCES "projects"("id") ON DELETE CASCADE, 
+    "user_id" integer REFERENCES "users"("id") ON DELETE SET NULL, 
+    "algorithm_id" integer NOT NULL REFERENCES "algorithms"("id") ON DELETE RESTRICT, 
+    "function_id" integer NOT NULL REFERENCES "objective_functions"("id") ON DELETE RESTRICT, 
+    "oracle_id" integer NOT NULL REFERENCES "oracles"("id") ON DELETE RESTRICT, 
+    "config_id" integer NOT NULL REFERENCES "experiment_configs"("id") ON DELETE RESTRICT, 
+    "environment_id" integer REFERENCES "environments"("id") ON DELETE SET NULL, 
+    "start_time" timestamp, 
+    "end_time" timestamp, 
+    "total_time_seconds" float CHECK ("total_time_seconds" >= 0), 
+    "total_oracle_calls" integer CHECK ("total_oracle_calls" >= 0)
+);
+
+CREATE TABLE "iteration_logs" (
+    "id" SERIAL PRIMARY KEY, 
+    "run_id" integer NOT NULL REFERENCES "experiment_runs"("id") ON DELETE CASCADE, 
+    "iteration_number" integer NOT NULL CHECK ("iteration_number" >= 0), 
+    "f_value" float NOT NULL, 
+    "grad_norm" float NOT NULL CHECK ("grad_norm" >= 0), 
+    "step_size" float NOT NULL, 
+    "oracle_calls_so_far" integer NOT NULL CHECK ("oracle_calls_so_far" >= 0)
+);
+
+запорсы с insert должны выглядеть так
+INSERT INTO "название таблицы" (...) VALUES
+....
